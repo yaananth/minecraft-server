@@ -18,9 +18,6 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 
 EXPOSE 25565 25575
 
-ADD https://github.com/itzg/rcon-cli/releases/download/1.3/rcon-cli_windows_amd64.exe /tools/rcon-cli.exe
-RUN cmd /c 'setx /M PATH \"C:\tools;%PATH%\"'
-
 COPY minecraft /minecraft
 
 VOLUME ["C:\\data","C:\\mods","C:\\config","C:\\plugins","C:\\users\\minecraft"]
