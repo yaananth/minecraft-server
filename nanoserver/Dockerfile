@@ -6,9 +6,7 @@ ARG VARIANT=nanoserver
 #================================================
 
 FROM openjdk:8-jre-${VARIANT}
-# We'll also symlink pwsh.exe -> powershell.exe so we can use pwsh throughout
-RUN New-Item -ItemType SymbolicLink -Path C:\windows\system32\pwsh.exe -Value (get-command powershell.exe).Source
-SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 # TODO: Add Python for mcstatus
 # TODO: pip install mcstatus
@@ -29,7 +27,7 @@ VOLUME ["C:\\data","C:\\mods","C:\\config","C:\\plugins","C:\\users\\minecraft"]
 
 WORKDIR C:\data
 
-ENTRYPOINT [ "pwsh", "-File", "C:\\minecraft\\start.ps1" ]
+ENTRYPOINT [ "powershell", "-File", "C:\\minecraft\\start.ps1" ]
 
 ENV UID=1000 `
     GID=1000 `

@@ -1,7 +1,7 @@
 on:
   push:
-    paths:
-      - .github/workflows/publish.yml
+    branches:
+      - master
   schedule:
     - cron: '0 9 * * *'
 
