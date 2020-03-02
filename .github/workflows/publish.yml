@@ -10,17 +10,13 @@ env:
 
 jobs:
   build:
+    runs-on: windows-2019
     strategy:
       matrix:
-        # tags from https://mcr.microsoft.com/v2/powershell/tags/list
         os: [nanoserver]
-        version: [1803, 1809]
-        # not listed in pwsh 6.2.4
-        # * 1607, 1709
+        version: [1809]
         # not supported on GitHub-hosted runners
-        # * 1903, 1909
-      fail-fast: false
-    runs-on: windows-latest
+        # * 1607, 1709, 1803, 1903, 1909
     steps:
       - uses: actions/checkout@v2
       - name: Build image
@@ -29,10 +25,10 @@ jobs:
             -t ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.version }} `
             --build-arg VARIANT=6.2.4-${{ matrix.os }}-${{ matrix.version }} `
             .
-      # - name: Push image.
-      #   run: |
-      #     docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      #     docker push ${ENV:IMAGE_NAME}:${{ matrix.tag }}
+      - name: Push image.
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker push ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.version }}
   # TODO: latest tag support
   # manifest:
   #   needs: build

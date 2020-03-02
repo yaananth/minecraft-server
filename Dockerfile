@@ -55,8 +55,6 @@ RUN $url = ('{0}x64_windows_{1}.zip' -f $env:JAVA_BASE_URL, $env:JAVA_URL_VERSIO
 # Note: 'localhost' can bizarrely resolve to external addresses on some networks
 #HEALTHCHECK --start-period=1m CMD mc-monitor status --host 127.0.0.1 --port $SERVER_PORT
 
-USER ContainerUser
-
 # TODO: Create minecraft user
 
 EXPOSE 25565 25575
@@ -87,3 +85,5 @@ ENV UID=1000 `
     MODPACK= `
     ONLINE_MODE=TRUE `
     CONSOLE=true
+
+USER ContainerUser
