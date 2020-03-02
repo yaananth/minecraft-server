@@ -25,9 +25,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build image
         run: |
-          docker build \
-            -t ${ENV:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.version }} \
-            --build-arg VARIANT=6.2.1-${{ matrix.os }}-${{ matrix.version}} \
+          docker build `
+            -t ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.version }} `
+            --build-arg VARIANT=6.2.1-${{ matrix.os }}-${{ matrix.version }} `
             .
       # - name: Push image.
       #   run: |
