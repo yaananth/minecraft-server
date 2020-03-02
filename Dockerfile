@@ -11,9 +11,7 @@ USER ContainerAdministrator
 
 ENV JAVA_HOME C:\openjdk-8
 RUN echo Updating PATH: %JAVA_HOME%\bin;%PATH% `
-    && setx /M PATH "%JAVA_HOME%\\bin;%PATH%"
-
-USER ContainerUser
+    && setx /M PATH "%JAVA_HOME%\bin;%PATH%"
 
 # $ProgressPreference: https://github.com/PowerShell/PowerShell/issues/2138#issuecomment-251261324
 SHELL [ "pwsh", "-c", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';" ]
@@ -34,7 +32,7 @@ ENV JAVA_URL_VERSION 8u242b08
 # > While it is true that the OpenJDK Governing Board has not sanctioned those releases, they (or rather we, since I am a member) didn't sanction Oracle's OpenJDK releases either. As far as I am aware, the lead of an OpenJDK project is entitled to release binary builds, and there is clearly a need for them.
 # >
 
-RUN $url = ('{0}x64_windows_{1}.zip' -f $Env:JAVA_BASE_URL, $Env:JAVA_URL_VERSION); `
+RUN $url = ('{0}x64_windows_{1}.zip' -f $env:JAVA_BASE_URL, $env:JAVA_URL_VERSION); `
     Write-Host ('Downloading {0} ...' -f $url); `
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; `
     Invoke-WebRequest -Uri $url -OutFile 'openjdk.zip'; `
@@ -42,7 +40,7 @@ RUN $url = ('{0}x64_windows_{1}.zip' -f $Env:JAVA_BASE_URL, $Env:JAVA_URL_VERSIO
     Write-Host 'Expanding ...'; `
     New-Item -ItemType Directory -Path C:\temp | Out-Null; `
     Expand-Archive openjdk.zip -DestinationPath C:\temp; `
-    Move-Item -Path C:\temp\* -Destination $Env:JAVA_HOME; `
+    Move-Item -Path C:\temp\* -Destination $env:JAVA_HOME; `
     Remove-Item C:\temp; `
     `
     Write-Host 'Removing ...'; `
@@ -56,6 +54,8 @@ RUN $url = ('{0}x64_windows_{1}.zip' -f $Env:JAVA_BASE_URL, $Env:JAVA_URL_VERSIO
 # TODO: Add mc-monitor
 # Note: 'localhost' can bizarrely resolve to external addresses on some networks
 #HEALTHCHECK --start-period=1m CMD mc-monitor status --host 127.0.0.1 --port $SERVER_PORT
+
+USER ContainerUser
 
 # TODO: Create minecraft user
 

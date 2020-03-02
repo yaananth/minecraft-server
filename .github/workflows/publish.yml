@@ -14,12 +14,12 @@ jobs:
       matrix:
         # tags from https://mcr.microsoft.com/v2/powershell/tags/list
         os: [nanoserver]
-        version: [1709, 1803, 1809]
-        # GitHub-hosted runners does not support
-        # - os: nanoserver
-        #   version: 1903
-        # - os: nanoserver
-        #   version: 1909
+        version: [1803, 1809]
+        # not listed in pwsh 6.2.4
+        # * 1607, 1709
+        # not supported on GitHub-hosted runners
+        # * 1903, 1909
+      fail-fast: false
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -27,7 +27,7 @@ jobs:
         run: |
           docker build `
             -t ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.version }} `
-            --build-arg VARIANT=6.2.1-${{ matrix.os }}-${{ matrix.version }} `
+            --build-arg VARIANT=6.2.4-${{ matrix.os }}-${{ matrix.version }} `
             .
       # - name: Push image.
       #   run: |
