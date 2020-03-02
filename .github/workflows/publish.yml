@@ -19,11 +19,17 @@ jobs:
             version: 1709
             pwsh: '6.2.1'
           - os: nanoserver
-            version: [1803, 1809]
+            version: 1803
+            pwsh: '6.2.4'
+          - os: nanoserver
+            version: 1809
             pwsh: '6.2.4'
           # GitHub-hosted runners does not support
           # - os: nanoserver
-          #   version: [1903, 1909]
+          #   version: 1903
+          #   pwsh: '6.2.4'
+          # - os: nanoserver
+          #   version: 1909
           #   pwsh: '6.2.4'
     runs-on: windows-latest
     steps:
@@ -31,7 +37,7 @@ jobs:
       - name: Build image
         run: |
           docker build -t ${ENV:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.version }} \
-            --build-arg VARIANT=${{ matrix.pwsh }}-${{ matrix.os }}-${{ matrix.tag }} \
+            --build-arg VARIANT=${{ matrix.pwsh }}-${{ matrix.os }}-${{ matrix.version}} \
             .
       # - name: Push image.
       #   run: |
