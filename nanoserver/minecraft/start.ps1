@@ -28,9 +28,9 @@ $VERSIONS_JSON="https://launchermeta.mojang.com/mc/game/version_manifest.json"
 $isNetworkAvailable = $false
 while (!$isNetworkAvailable) {
   try {
-    Invoke-WebRequest -Uri "https://launchermeta.mojang.com/mc/game/version_manifest.json"
+    Invoke-WebRequest -UseBasicParsing -Uri $VERSIONS_JSON | Out-Null
     $isNetworkAvailable = $true
-  } 
+  }
   catch {
     $date = Get-Date -Format g
     Write-Host "$data - Waiting on the network to become available"
@@ -42,11 +42,11 @@ echo "Checking version information."
 switch -regex ("X$Env:VERSION")
 {
   "X|XLATEST|Xlatest" {
-    $VANILLA_VERSION = (invoke-webrequest -Uri $VERSIONS_JSON | convertfrom-json | select -expand latest).release
+    $VANILLA_VERSION = (invoke-webrequest -UseBasicParsing -Uri $VERSIONS_JSON | convertfrom-json | select -expand latest).release
     break
   }
   "XSNAPSHOT|Xsnapshot" {
-    $VANILLA_VERSION = (invoke-webrequest -Uri $VERSIONS_JSON | convertfrom-json | select -expand latest).snapshot
+    $VANILLA_VERSION = (invoke-webrequest -UseBasicParsing -Uri $VERSIONS_JSON | convertfrom-json | select -expand latest).snapshot
     break
   }
   "X[1-9]*" {
@@ -54,7 +54,7 @@ switch -regex ("X$Env:VERSION")
     break
   }
   default {
-    $VANILLA_VERSION = (invoke-webrequest -Uri $VERSIONS_JSON | convertfrom-json | select -expand latest).release
+    $VANILLA_VERSION = (invoke-webrequest -UseBasicParsing -Uri $VERSIONS_JSON | convertfrom-json | select -expand latest).release
     break
   }
 }
@@ -322,7 +322,12 @@ function installVanilla {
 
   if (!(Test-Path -Path $SERVER)) {
     echo "Downloading $SERVER ..."
-    Invoke-WebRequest -Uri (Invoke-WebRequest -Uri ((Invoke-WebRequest -Uri 'https://launchermeta.mojang.com/mc/game/version_manifest.json' | ConvertFrom-Json).versions | ? id -eq $VANILLA_VERSION).url | ConvertFrom-Json).downloads.server.url -OutFile "minecraft_server.$VANILLA_VERSION.jar"
+    Invoke-WebRequest -UseBasicParsing -Uri (
+      Invoke-WebRequest -UseBasicParsing -Uri (
+        (Invoke-WebRequest -UseBasicParsing -Uri $VERSIONS_JSON | ConvertFrom-Json).versions `
+        | ? id -eq $VANILLA_VERSION).url `
+      | ConvertFrom-Json).downloads.server.url `
+      -OutFile "minecraft_server.$VANILLA_VERSION.jar"
   }
 }
 
@@ -544,7 +549,7 @@ if (!(Test-Path -Path '.\server.properties')) {
         $Env:DIFFICULTY=3
         break
       }
-      
+
       default {
         echo "DIFFICULTY must be peaceful, easy, normal, or hard."
         exit 1
@@ -669,10 +674,10 @@ else
     $JAVA_ARGS = @($Env:JVM_XX_OPTS, $JVM_OPTS, $ENCODING_HACK, "-jar", $SERVER, "$@", $EXTRA_ARGS) | ? {$_}
 
     # If we have a bootstrap.txt file... feed that in to the server stdin
-    if (Test-Path -Path '/data/bootstrap.txt') 
+    if (Test-Path -Path '/data/bootstrap.txt')
     {
         # java $Env:JVM_XX_OPTS $JVM_OPTS -jar $SERVER "$@" $EXTRA_ARGS < /data/bootstrap.txt
-    } 
+    }
     else
     {
         start-process -FilePath java -ArgumentList $JAVA_ARGS -wait -PassThru -NoNewWindow | out-null
