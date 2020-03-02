@@ -1,11 +1,6 @@
 $ErrorActionPreference = 'Stop';
 $ProgressPreference = 'SilentlyContinue';
 
-if (!(Test-Path -Path minecraft)) {
-  mkdir minecraft
-}
-cd minecraft
-
 if (!(Test-Path -Path "$pwd\eula.txt")) {
   if ($Env:EULA -eq 'TRUE') {
     [System.IO.File]::WriteAllText("$pwd\eula.txt", "# Generated via Docker on $(Get-Date)`neula=TRUE")

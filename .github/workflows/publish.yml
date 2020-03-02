@@ -12,16 +12,31 @@ jobs:
   build:
     strategy:
       matrix:
-        tag: [nanoserver, windowsservercore]
+        # tags from https://mcr.microsoft.com/v2/powershell/tags/list
+        os: [nanoserver]
+        include:
+          - os: nanoserver
+            version: 1709
+            pwsh: '6.2.1'
+          - os: nanoserver
+            version: [1803, 1809]
+            pwsh: '6.2.4'
+          # GitHub-hosted runners does not support
+          # - os: nanoserver
+          #   version: [1903, 1909]
+          #   pwsh: '6.2.4'
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build image.
-        run: docker build -t ${ENV:IMAGE_NAME}:${{ matrix.tag }} --build-arg VARIANT=${{ matrix.tag }} .
-      - name: Push image.
+      - name: Build image
         run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker push ${ENV:IMAGE_NAME}:${{ matrix.tag }}
+          docker build -t ${ENV:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.version }} \
+            --build-arg VARIANT=${{ matrix.pwsh }}-${{ matrix.os }}-${{ matrix.tag }} \
+            .
+      # - name: Push image.
+      #   run: |
+      #     docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      #     docker push ${ENV:IMAGE_NAME}:${{ matrix.tag }}
   # TODO: latest tag support
   # manifest:
   #   needs: build
