@@ -10,8 +10,8 @@ FROM mcr.microsoft.com/powershell:${VARIANT}
 USER ContainerAdministrator
 
 ENV JAVA_HOME C:\openjdk-8
-RUN echo Updating PATH: %JAVA_HOME%\\bin;%PATH% `
-    && setx /M PATH %JAVA_HOME%\\bin;%PATH%
+RUN echo Updating PATH: %JAVA_HOME%\bin;%PATH% `
+    && setx /M PATH "%JAVA_HOME%\\bin;%PATH%"
 
 USER ContainerUser
 
