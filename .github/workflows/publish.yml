@@ -25,11 +25,12 @@ jobs:
         run: |
           .\build-bundle.ps1 `
             -HostTag ${{ matrix.host-tag }} `
-            -ImageName docker.pkg.github.com/$env:IMAGE_NAME-bundle
-      - run: docker images
+            -ImageName ${{ github.repository }}-bundle
       - name: Push image
         run: |
-          docker login docker.pkg.github.com -u sunghwan2789 -p ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
+          docker login -u sunghwan2789 -p ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
+          docker push ${{ github.repository }}-bundle:pwsh-${{ matrix.host-tag }}
+          docker push ${{ github.repository }}-bundle:java-${{ matrix.host-tag }}
   # build:
   #   runs-on: windows-2019
   #   strategy:
