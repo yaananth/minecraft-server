@@ -1,0 +1,24 @@
+{
+  "$schema": "./bundle.schema.json",
+  "items": [
+    {
+      "name": "pwsh",
+      "directory": "C:\\pwsh",
+      "url": "https://github.com/PowerShell/PowerShell/releases/download/v6.2.4/PowerShell-6.2.4-win-x64.zip",
+      "verify_command": "pwsh -Version"
+    },
+    {
+      "name": "jre",
+      "directory": "C:\\java",
+      "home": "C:\\java\\bin",
+      "environment_variables": [
+        {
+          "name": "JAVA_HOME",
+          "value": "C:\\java"
+        }
+      ],
+      "url": "https://github.com/AdoptOpenJDK/openjdk8-upstream-binaries/releases/download/jdk8u242-b08/OpenJDK8U-jre_x64_windows_8u242b08.zip",
+      "verify_command": "pwsh -Version"
+    }
+  ]
+}

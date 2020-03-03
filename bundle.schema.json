@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "items": {
+      "$id": "#/properties/items",
+      "type": "array",
+      "items": {
+        "$id": "#/properties/items/items",
+        "type": "object",
+        "default": {
+          "name": "",
+          "directory": "",
+          "home": "",
+          "environment_variables": [],
+          "url": "",
+          "verify_command": ""
+        },
+        "required": [
+          "name",
+          "directory",
+          "url",
+          "verify_command"
+        ],
+        "properties": {
+          "name": {
+            "$id": "#/properties/items/items/properties/name",
+            "type": "string"
+          },
+          "directory": {
+            "$id": "#/properties/items/items/properties/directory",
+            "type": "string"
+          },
+          "home": {
+            "$id": "#/properties/items/items/properties/home",
+            "type": "string"
+          },
+          "environment_variables": {
+            "$id": "#/properties/items/items/properties/environment_variables",
+            "type": "array",
+            "items": {
+              "$id": "#/properties/items/items/properties/environment_variables/items",
+              "type": "object",
+              "default": {
+                "name": "",
+                "value": ""
+              },
+              "required": ["name", "value"],
+              "properties": {
+                "name": {
+                  "$id": "#/properties/items/items/properties/environment_variables/items/properties/name",
+                  "type": "string"
+                },
+                "value": {
+                  "$id": "#/properties/items/items/properties/environment_variables/items/properties/value",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "url": {
+            "$id": "#/properties/items/items/properties/url",
+            "type": "string"
+          },
+          "verify_command": {
+            "$id": "#/properties/items/items/properties/verify_command",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
