@@ -8,7 +8,7 @@
       "verify_command": "pwsh -Version"
     },
     {
-      "name": "jre",
+      "name": "java",
       "directory": "C:\\java",
       "home": "C:\\java\\bin",
       "environment_variables": [
@@ -18,7 +18,7 @@
         }
       ],
       "url": "https://github.com/AdoptOpenJDK/openjdk8-upstream-binaries/releases/download/jdk8u242-b08/OpenJDK8U-jre_x64_windows_8u242b08.zip",
-      "verify_command": "pwsh -Version"
+      "verify_command": "java -version"
     }
   ]
 }

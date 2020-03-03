@@ -12,28 +12,40 @@ param (
   [string[]]
   $Options
 )
+# Not actually stop on local execution
 $ErrorActionPreference = 'Stop';
 
-$imageName = (($ImageName, 'bundle') -ne $null)[0]
-$options = $Options -join ' '
+$ImageName = if ($ImageName) { $ImageName } else { 'bundle' }
+$Options = $Options -join ' '
 
 Write-Host 'Pull latest image of bundle host' -ForegroundColor Green
 docker pull mcr.microsoft.com/windows/servercore:$HostTag
 
-Write-Host ('Build {0}:pwsh' -f $imageName) -ForegroundColor Green
-docker build -t ${imageName}:pwsh-$HostTag `
-  --build-arg HOST_TAG=$HostTag `
-  --build-arg BUNDLE_URL=https://github.com/PowerShell/PowerShell/releases/download/v6.2.4/PowerShell-6.2.4-win-x64.zip `
-  --build-arg BUNDLE_DESTINATION=C:\pwsh `
-  --build-arg VERIFY_COMMAND="pwsh -Version" `
-  $options bundle
+$bundle = Get-Content '.\bundle.json' | ConvertFrom-Json
+foreach ($item in $bundle.items) {
+  $tag = '{0}:{1}-{2}' -f $ImageName, $item.name, $HostTag
+  Write-Host ('Build {0}' -f $tag) -ForegroundColor Green
 
-Write-Host ('Build {0}:java' -f $imageName) -ForegroundColor Green
-docker build -t ${imageName}:java-$HostTag `
-  --build-arg HOST_TAG=$HostTag `
-  --build-arg BUNDLE_URL=https://github.com/AdoptOpenJDK/openjdk8-upstream-binaries/releases/download/jdk8u242-b08/OpenJDK8U-jdk_x64_windows_8u242b08.zip `
-  --build-arg BUNDLE_DESTINATION=C:\java `
-  --build-arg BUNDLE_HOME=C:\java\bin `
-  --build-arg ENVIRONMENT_VARIABLES="JAVA_HOME=C:\java" `
-  --build-arg VERIFY_COMMAND="java -version" `
-  $options bundle
+  $directory = '{0}' -f $item.directory
+  $homeDirectory = '{0}' -f $item.home
+  $url = '{0}' -f $item.url
+  $verifyCommand = '{0}' -f $item.verify_command
+
+  $sb = [System.Text.StringBuilder]::new()
+  foreach ($var in $item.environment_variables) {
+    if ($sb.Length) {
+      [void]$sb.Append('|')
+    }
+    [void]$sb.AppendFormat('{0}={1}', $var.name, $var.value)
+  }
+  $environmentVariables = $sb.ToString()
+
+  docker build -t $tag `
+    --build-arg HOST_TAG=$HostTag `
+    --build-arg BUNDLE_URL=$url `
+    --build-arg BUNDLE_DESTINATION=$directory `
+    --build-arg BUNDLE_HOME=$homeDirectory `
+    --build-arg ENVIRONMENT_VARIABLES=$environmentVariables `
+    --build-arg VERIFY_COMMAND=$verifyCommand `
+    $Options bundle
+}
