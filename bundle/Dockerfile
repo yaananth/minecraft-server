@@ -28,8 +28,8 @@ RUN $newPath = ('{0};{1}' -f $env:BUNDLE_HOME, $env:PATH); `
   Write-Host ('Updating PATH: {0}' -f $newPath); `
   setx /M PATH $newPath; `
   `
-  Write-Host 'Setting environmet variables ...'; `
   if ($env:ENVIRONMENT_VARIABLES) { `
+    Write-Host 'Setting environmet variables ...'; `
     foreach ($item in ($env:ENVIRONMENT_VARIABLES -split '\|')) { `
       Write-Host ('  {0}' -f $item); `
       setx /M ($item -split '=', 2); `
