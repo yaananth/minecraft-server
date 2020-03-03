@@ -21,7 +21,15 @@ jobs:
             host-tag: ltsc2016
     steps:
       - uses: actions/checkout@v2
-      - run: .\build-bundle.ps1 ${{ matrix.host-tag }}
+      - name: Build image
+        run: |
+          .\build-bundle.ps1 `
+            -HostTag ${{ matrix.host-tag }} `
+            -ImageName docker.pkg.github.com/$env:IMAGE_NAME-bundle
+      - run: docker images
+      - name: Push image
+        run: |
+          docker login docker.pkg.github.com -u sunghwan2789 -p ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
   # build:
   #   runs-on: windows-2019
   #   strategy:
