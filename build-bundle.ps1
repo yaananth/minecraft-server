@@ -21,7 +21,7 @@ Write-Host 'Pull latest image of bundle host' -ForegroundColor Green
 docker pull mcr.microsoft.com/windows/servercore:$HostTag
 
 Write-Host ('Build {0}:pwsh' -f $imageName) -ForegroundColor Green
-docker build -t ${imageName}:pwsh `
+docker build -t ${imageName}:pwsh-$HostTag `
   --build-arg HOST_TAG=$HostTag `
   --build-arg BUNDLE_URL=https://github.com/PowerShell/PowerShell/releases/download/v6.2.4/PowerShell-6.2.4-win-x64.zip `
   --build-arg BUNDLE_DESTINATION=C:\pwsh `
@@ -29,11 +29,11 @@ docker build -t ${imageName}:pwsh `
   $options bundle
 
 Write-Host ('Build {0}:java' -f $imageName) -ForegroundColor Green
-docker build -t ${imageName}:java `
+docker build -t ${imageName}:java-$HostTag `
   --build-arg HOST_TAG=$HostTag `
   --build-arg BUNDLE_URL=https://github.com/AdoptOpenJDK/openjdk8-upstream-binaries/releases/download/jdk8u242-b08/OpenJDK8U-jdk_x64_windows_8u242b08.zip `
   --build-arg BUNDLE_DESTINATION=C:\java `
   --build-arg BUNDLE_HOME=C:\java\bin `
-  --build-arg ENVIRONMENT_VARIABLES="JAVA_HOME=C:\java\bin" `
+  --build-arg ENVIRONMENT_VARIABLES="JAVA_HOME=C:\java" `
   --build-arg VERIFY_COMMAND="java -version" `
   $options bundle
