@@ -9,26 +9,39 @@ env:
   IMAGE_NAME: sunghwan2789/minecraft-server
 
 jobs:
-  build:
-    runs-on: windows-2019
+  build-bundle:
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [nanoserver]
-        version: [1809]
-        # not supported on GitHub-hosted runners
-        # * 1607, 1709, 1803, 1903, 1909
+        os: [windows-2019, windows-2016]
+        include:
+          - os: windows-2019
+            host-tag: ltsc2019
+          - os: windows-2016
+            host-tag: ltsc2016
     steps:
-      - uses: actions/checkout@v2
-      - name: Build image
-        run: |
-          docker build `
-            -t ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.version }} `
-            --build-arg VARIANT=6.2.4-${{ matrix.os }}-${{ matrix.version }} `
-            .
-      - name: Push image.
-        run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker push ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.version }}
+      - uses: actions:/checkout@v2
+      - run: .\build-bundle.ps1 ${{ matrix.host-tag }}
+  # build:
+  #   runs-on: windows-2019
+  #   strategy:
+  #     matrix:
+  #       os: [nanoserver]
+  #       version: [1809]
+  #       # not supported on GitHub-hosted runners
+  #       # * 1607, 1709, 1803, 1903, 1909
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Build image
+  #       run: |
+  #         docker build `
+  #           -t ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.version }} `
+  #           --build-arg VARIANT=6.2.4-${{ matrix.os }}-${{ matrix.version }} `
+  #           .
+  #     - name: Push image.
+  #       run: |
+  #         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+  #         docker push ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.version }}
   # TODO: latest tag support
   # manifest:
   #   needs: build
