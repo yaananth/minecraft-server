@@ -8,6 +8,7 @@ param (
   [string[]]
   $Options
 )
+$ErrorActionPreference = 'Stop';
 
 $options = $Options -join ' '
 
