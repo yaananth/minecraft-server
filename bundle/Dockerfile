@@ -14,9 +14,8 @@ ARG BUNDLE_DESTINATION=C:\bundle
 
 # Directory that bundle binary located in
 ARG BUNDLE_HOME
-ENV BUNDLE_HOME=${BUNDLE_DESTINATION}
 
-# List of key=var environment variable that delimited with |
+# List of key=value environment variable that delimited with |
 ARG ENVIRONMENT_VARIABLES
 
 # Command that is used to verify installation
@@ -24,7 +23,8 @@ ARG VERIFY_COMMAND="pwsh -Version"
 
 SHELL [ "powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';" ]
 
-RUN $newPath = ('{0};{1}' -f $env:BUNDLE_HOME, $env:PATH); `
+RUN $bundleHome = (($env:BUNDLE_HOME, $env:BUNDLE_DESTINATION) -ne $null)[0]; `
+  $newPath = ('{0};{1}' -f $bundleHome, $env:PATH); `
   Write-Host ('Updating PATH: {0}' -f $newPath); `
   setx /M PATH $newPath; `
   `
