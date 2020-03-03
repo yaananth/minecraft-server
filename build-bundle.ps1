@@ -18,9 +18,6 @@ $ErrorActionPreference = 'Stop';
 $ImageName = if ($ImageName) { $ImageName } else { 'bundle' }
 $Options = $Options -join ' '
 
-Write-Host 'Pull latest image of bundle host' -ForegroundColor Green
-docker pull mcr.microsoft.com/windows/servercore:$HostTag
-
 $bundle = Get-Content '.\bundle.json' | ConvertFrom-Json
 foreach ($item in $bundle.items) {
   $tag = '{0}:{1}-{2}' -f $ImageName, $item.name, $HostTag
@@ -40,7 +37,7 @@ foreach ($item in $bundle.items) {
   }
   $environmentVariables = $sb.ToString()
 
-  docker build -t $tag `
+  docker build -t $tag --pull `
     --build-arg HOST_TAG=$HostTag `
     --build-arg BUNDLE_URL=$url `
     --build-arg BUNDLE_DESTINATION=$directory `
