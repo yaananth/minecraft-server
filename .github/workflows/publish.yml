@@ -25,14 +25,14 @@ jobs:
         run: |
           .\build-bundle.ps1 `
             -HostTag ${{ matrix.host-tag }} `
-            -ImageName $env:IMAGE_NAME-bundle
+            -ImageName docker.pkg.github.com/${{ github.repository }}/bundle
       - name: Push image
         run: |
-          docker login -u sunghwan2789 -p ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
+          docker login -u sunghwan2789 -p ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
           $bundle = Get-Content .\bundle.json | ConvertFrom-Json; `
             foreach ($item in $bundle.items) { `
               $name = '{0}' -f $item.name; `
-              docker push $env:IMAGE_NAME-bundle:$name-${{ matrix.host-tag }}; `
+              docker push docker.pkg.github.com/${{ github.repository }}/bundle:$name-${{ matrix.host-tag }}; `
             }
   # build:
   #   runs-on: windows-2019
