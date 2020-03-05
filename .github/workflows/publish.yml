@@ -42,28 +42,31 @@ jobs:
       matrix:
         #os: [nanoserver, windowsservercore]
         os: [nanoserver]
-        host-tag: [1607, 1709, 1803, 1809]
+        host-tag: [ltsc2016, sac2016, 1607, 1709, 1803, ltsc2019, 1809]
         # not supported on GitHub-hosted runners
         # * 1607, 1709, 1803, 1903, 1909
         exclude:
           - os: nanoserver
-            host-tag: 1607
-        include:
-          - os: nanoserver
-            host-tag: sac2016
-            bundle-tag: ltsc2016
-          - os: windowsservercore
             host-tag: ltsc2016
-            bundle-tag: ltsc2016
-          - os: windowsservercore
+          - os: nanoserver
+            host-tag: 1607
+          - os: nanoserver
             host-tag: ltsc2019
-            bundle-tag: ltsc2019
+          - os: windowsservercore
+            host-tag: sac2016
+        include:
+          - host-tag: ltsc2016
+            bundle-tag: ltsc2016
+          - host-tag: sac2016
+            bundle-tag: ltsc2016
           - host-tag: 1607
             bundle-tag: ltsc2016
           - host-tag: 1709
             bundle-tag: ltsc2016
           - host-tag: 1803
             bundle-tag: ltsc2016
+          - host-tag: ltsc2019
+            bundle-tag: ltsc2019
           - host-tag: 1809
             bundle-tag: ltsc2019
     steps:
