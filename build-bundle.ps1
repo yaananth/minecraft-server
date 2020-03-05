@@ -16,7 +16,6 @@ param (
 $ErrorActionPreference = 'Stop';
 
 $ImageName = if ($ImageName) { $ImageName } else { 'bundle' }
-$Options = $Options -join ' '
 
 $bundle = Get-Content '.\bundle.json' | ConvertFrom-Json
 foreach ($item in $bundle.items) {
