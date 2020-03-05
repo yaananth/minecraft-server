@@ -79,7 +79,7 @@ jobs:
             --pull --isolation=hyperv
       - name: Push image
         run: |
-          docker login -u sunghwan2789 -p ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
+          # docker login -u sunghwan2789 -p ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
           docker push ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.host-tag }}
   # TODO: latest tag support
   # manifest:
