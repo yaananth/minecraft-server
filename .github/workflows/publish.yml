@@ -7,6 +7,7 @@ on:
 
 env:
   IMAGE_NAME: sunghwan2789/minecraft-server
+  BUNDLE_IMAGE_NAME: sunghwan2789/minecraft-server-bundle
 
 jobs:
   build-bundle:
@@ -25,35 +26,61 @@ jobs:
         run: |
           .\build-bundle.ps1 `
             -HostTag ${{ matrix.host-tag }} `
-            -ImageName docker.pkg.github.com/${{ github.repository }}/bundle
+            -ImageName ${env:BUNDLE_IMAGE_NAME}
       - name: Push image
         run: |
-          docker login -u sunghwan2789 -p ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
+          docker login -u sunghwan2789 -p ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
           $bundle = Get-Content .\bundle.json | ConvertFrom-Json; `
             foreach ($item in $bundle.items) { `
               $name = '{0}' -f $item.name; `
-              docker push docker.pkg.github.com/${{ github.repository }}/bundle:$name-${{ matrix.host-tag }}; `
+              docker push ${env:BUNDLE_IMAGE_NAME}:$name-${{ matrix.host-tag }}; `
             }
-  # build:
-  #   runs-on: windows-2019
-  #   strategy:
-  #     matrix:
-  #       os: [nanoserver]
-  #       version: [1809]
-  #       # not supported on GitHub-hosted runners
-  #       # * 1607, 1709, 1803, 1903, 1909
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Build image
-  #       run: |
-  #         docker build `
-  #           -t ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.version }} `
-  #           --build-arg VARIANT=6.2.4-${{ matrix.os }}-${{ matrix.version }} `
-  #           .
-  #     - name: Push image.
-  #       run: |
-  #         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-  #         docker push ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.version }}
+  build:
+    needs: build-bundle
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        #os: [nanoserver, windowsservercore]
+        os: [nanoserver]
+        host-tag: [1607, 1709, 1803, 1809]
+        # not supported on GitHub-hosted runners
+        # * 1607, 1709, 1803, 1903, 1909
+        exclude:
+          - os: nanoserver
+            host-tag: 1607
+        include:
+          - os: nanoserver
+            host-tag: sac2016
+            bundle-tag: ltsc2016
+          - os: windowsservercore
+            host-tag: ltsc2016
+            bundle-tag: ltsc2016
+          - os: windowsservercore
+            host-tag: ltsc2019
+            bundle-tag: ltsc2019
+          - host-tag: 1607
+            bundle-tag: ltsc2016
+          - host-tag: 1709
+            bundle-tag: ltsc2016
+          - host-tag: 1803
+            bundle-tag: ltsc2016
+          - host-tag: 1809
+            bundle-tag: ltsc2019
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build image
+        run: |
+          .\build-server.ps1 `
+            -HostImageName ${{ matrix.os }} `
+            -HostTag ${{ matrix.host-tag }} `
+            -ImageName $env:IMAGE_NAME `
+            -BundleImageName $env:BUNDLE_IMAGE_NAME `
+            -BundleTag ${{ matrix.bundle-tag }} `
+            --pull --isolation=hyperv
+      - name: Push image
+        run: |
+          docker login -u sunghwan2789 -p ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
+          docker push ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.host-tag }}
   # TODO: latest tag support
   # manifest:
   #   needs: build
