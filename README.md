@@ -18,6 +18,8 @@ docker run -d --rm -m 2GB -p 25565:25565 -p 25575:25575 -e EULA=TRUE -v c:/temp/
 
 As of 2018-08-03, you will need to enable set `"experimental": "enabled"` in your `.docker/config.json` file to enable `docker manifest` commands
 
+test
+
 ```powershell
 # Build images for each OS version
 docker build -t acanthamoeba/minecraft-server:nanoserver-1803 --build-arg POWERSHELL_BASETAG=nanoserver-1803 --target minecraft .
