@@ -11,15 +11,10 @@ env:
 
 jobs:
   build-bundle:
-    runs-on: ${{ matrix.os }}
+    runs-on: [self-hosted]
     strategy:
       matrix:
-        os: [windows-2019, windows-2016]
-        include:
-          - os: windows-2019
-            host-tag: ltsc2019
-          - os: windows-2016
-            host-tag: ltsc2016
+        host-tag: [ltsc2019, ltsc2016]
     steps:
       - uses: actions/checkout@v2
       - name: Build image
@@ -37,7 +32,7 @@ jobs:
             }
   build:
     needs: build-bundle
-    runs-on: self-hosted
+    runs-on: [self-hosted]
     strategy:
       matrix:
         #os: [nanoserver, windowsservercore]
