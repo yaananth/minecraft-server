@@ -2,12 +2,10 @@ on:
   push:
     branches:
       - master
-  schedule:
-    - cron: '0 9 * * *'
 
 env:
-  IMAGE_NAME: sunghwan2789/minecraft-server
-  BUNDLE_IMAGE_NAME: sunghwan2789/minecraft-server-bundle
+  IMAGE_NAME: yaananth/minecraft-server
+  BUNDLE_IMAGE_NAME: yaananth/minecraft-server-bundle
 
 jobs:
   build-bundle:
