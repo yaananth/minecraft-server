@@ -40,8 +40,7 @@ jobs:
     runs-on: [self-hosted]
     strategy:
       matrix:
-        #os: [nanoserver, windowsservercore]
-        os: [nanoserver]
+        os: [nanoserver, windowsservercore]
         host-tag: [ltsc2016, 1607, 1709, 1803, ltsc2019, 1809]
         # not supported on GitHub-hosted runners
         # * 1607, 1709, 1803, 1903, 1909
