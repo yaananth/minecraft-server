@@ -34,16 +34,14 @@ Write-Host ('Build {0}' -f $tag) -ForegroundColor Green
 $bundle = Get-Content '.\bundle.json' | ConvertFrom-Json
 $pwsh = $bundle.items | Where-Object 'name' -EQ 'pwsh'
 $pwshDirectory = '{0}' -f $pwsh.directory
-$pwshImage = '{0}:pwsh-{1}' -f $BundleImageName, $BundleTag
 $java = $bundle.items | Where-Object 'name' -EQ 'java'
 $javaDirectory = '{0}' -f $java.directory
-$javaImage = '{0}:java-{1}' -f $BundleImageName, $BundleTag
 
 docker build -t $tag `
   --build-arg HOST_TAG=$HostTag `
-  --build-arg PWSH_BUNDLE_IMAGE=$pwshImage `
+  --build-arg BUNDLE_IMAGE_NAME=$BundleImageName `
+  --build-arg BUNDLE_TAG=$BundleTag `
   --build-arg PWSH_BUNDLE_DIRECTORY=$pwshDirectory `
-  --build-arg JAVA_BUNDLE_IMAGE=$javaImage `
   --build-arg JAVA_BUNDLE_DIRECTORY=$javaDirectory `
   -f .\$HostImageName\Dockerfile `
   $Options .
