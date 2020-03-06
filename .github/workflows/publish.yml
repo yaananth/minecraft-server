@@ -22,9 +22,13 @@ jobs:
           .\build-bundle.ps1 `
             -HostTag ${{ matrix.host-tag }} `
             -ImageName ${env:BUNDLE_IMAGE_NAME}
+      - name: Docker Login
+        uses: Azure/docker-login@v1
+        with:
+          username: sunghwan2789
+          password: ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
       - name: Push image
         run: |
-          docker login -u sunghwan2789 -p ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
           $bundle = Get-Content .\bundle.json | ConvertFrom-Json; `
             foreach ($item in $bundle.items) { `
               $name = '{0}' -f $item.name; `
@@ -75,9 +79,13 @@ jobs:
             -BundleImageName $env:BUNDLE_IMAGE_NAME `
             -BundleTag ${{ matrix.bundle-tag }} `
             --pull --isolation=hyperv --no-cache
+      - name: Docker Login
+        uses: Azure/docker-login@v1
+        with:
+          username: sunghwan2789
+          password: ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
       - name: Push image
         run: |
-          docker login -u sunghwan2789 -p ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
           docker push ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.host-tag }}
   # TODO: latest tag support
   # manifest:
