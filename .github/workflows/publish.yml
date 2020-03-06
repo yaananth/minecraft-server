@@ -79,11 +79,11 @@ jobs:
             -ImageName $env:IMAGE_NAME `
             -BundleImageName $env:BUNDLE_IMAGE_NAME `
             -BundleTag ${{ matrix.bundle-tag }} `
-            --pull --isolation=hyperv
+            --pull --isolation=hyperv --no-cache
       - name: Push image
         run: |
-          # docker login -u sunghwan2789 -p ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
-          docker images ;echo ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.host-tag }} ;docker push ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.host-tag }}
+          docker login -u sunghwan2789 -p ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
+          docker push ${env:IMAGE_NAME}:${{ matrix.os }}-${{ matrix.host-tag }}
   # TODO: latest tag support
   # manifest:
   #   needs: build
