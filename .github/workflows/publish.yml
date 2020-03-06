@@ -75,7 +75,7 @@ jobs:
             -ImageName $env:IMAGE_NAME `
             -BundleImageName $env:BUNDLE_IMAGE_NAME `
             -BundleTag ${{ matrix.bundle-tag }} `
-            --pull --isolation=hyperv --no-cache
+            --pull --isolation=hyperv
       - name: Docker Login
         uses: Azure/docker-login@v1
         with:
